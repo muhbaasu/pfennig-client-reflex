@@ -11,7 +11,7 @@ import GHCJS.Types
 import Reflex
 import Reflex.Dom
 import Data.FileEmbed
-import Data.Monoid((<>))
+import Safe(readMay)
 
 --import Layout (readCSS)
 
@@ -43,18 +43,20 @@ login = divClass "center" $
 --      link "/register" $ text "Register"
 --      link "#" $ text "Forgot password?"
 
-loginField :: MonadWidget t m => m (Dynamic t LoginFields)
+loginField :: MonadWidget t m => m (Dynamic t (Maybe LoginFields))
 loginField = do
   lc <- loginCredentials
   -- el "label" $ text "Remember me"
   cb <- row $ checkbox False def
-  combineDyn LoginFields lc (_checkbox_value cb)
+  combineDyn (\x y -> LoginFields <$> x <*> Just y) lc (_checkbox_value cb)
 
-loginCredentials :: MonadWidget t m => m (Dynamic t UserFields)
+loginCredentials :: MonadWidget t m => m (Dynamic t (Maybe UserFields))
 loginCredentials = do
   user <- row $ textInput def
   pw <- row $ textInput def
-  combineDyn UserFields (_textInput_value user) (_textInput_value pw)
+  mayUser <- mapDyn readMay $ _textInput_value user
+  mayPw <- mapDyn readMay $ _textInput_value pw
+  combineDyn (\x y -> UserFields <$> x <*> y) mayUser mayPw
 
    --el "div" $ do
   ----  elAttr "div" ("class" =: "center")
