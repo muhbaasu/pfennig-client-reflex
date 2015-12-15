@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE RankNTypes #-}
+
 module Lib
     ( someFunc
     ) where
@@ -9,17 +11,52 @@ import GHCJS.Types
 import Reflex
 import Reflex.Dom
 import Data.FileEmbed
+import Data.Monoid((<>))
 
 --import Layout (readCSS)
+
+data UserFields = UserFields {
+    _usrFmail    :: String
+  , _usrFPassword :: String
+  } deriving (Show)
+
+data LoginFields = LoginFields {
+    _usrFields :: UserFields
+  , _rememberMe :: Bool
+  } deriving (Show)
 
 someFunc :: IO ()
 someFunc = mainWidgetWithCss $(embedFile "assets/style.css") login
 
+row :: forall t m a. MonadWidget t m => m a -> m a
+row = divClass "row"
+
 login :: MonadWidget t m => m ()
 login = divClass "center" $
-  elClass "form" "login" $ text "bla"
- --do
-  --el "div" $ do
+  elClass "form" "login" $ do
+    elClass "h3" "Login" $ text "Login"
+    z <- loginField
+    x <- mapDyn show z
+    dynText x
+
+--    row $ do
+--      link "/register" $ text "Register"
+--      link "#" $ text "Forgot password?"
+
+loginField :: MonadWidget t m => m (Dynamic t LoginFields)
+loginField = do
+  lc <- loginCredentials
+  -- el "label" $ text "Remember me"
+  cb <- row $ checkbox False def
+  combineDyn LoginFields lc (_checkbox_value cb)
+
+loginCredentials :: MonadWidget t m => m (Dynamic t UserFields)
+loginCredentials = do
+  user <- row $ textInput def
+  pw <- row $ textInput def
+  combineDyn UserFields (_textInput_value user) (_textInput_value pw)
+
+   --el "div" $ do
   ----  elAttr "div" ("class" =: "center")
   ----  return ()
 
