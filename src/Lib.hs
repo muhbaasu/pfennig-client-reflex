@@ -7,11 +7,10 @@ module Lib
     ) where
 
 import GHCJS.Foreign ()
-import GHCJS.Types
 import Reflex
 import Reflex.Dom
 import Data.FileEmbed
-import Safe(readMay)
+import Control.Monad (MonadPlus(), mfilter)
 
 --import Layout (readCSS)
 
@@ -30,6 +29,9 @@ someFunc = mainWidgetWithCss $(embedFile "assets/style.css") login
 
 row :: forall t m a. MonadWidget t m => m a -> m a
 row = divClass "row"
+
+mNotEmpty :: (Eq a, Monoid a, MonadPlus m) => m a -> m a
+mNotEmpty = mfilter (not . (== mempty))
 
 login :: MonadWidget t m => m ()
 login = divClass "center" $
@@ -54,8 +56,8 @@ loginCredentials :: MonadWidget t m => m (Dynamic t (Maybe UserFields))
 loginCredentials = do
   user <- row $ textInput def
   pw <- row $ textInput def
-  mayUser <- mapDyn readMay $ _textInput_value user
-  mayPw <- mapDyn readMay $ _textInput_value pw
+  mayUser <- mapDyn (mNotEmpty . Just) $ _textInput_value user
+  mayPw <- mapDyn (mNotEmpty . Just) $ _textInput_value pw
   combineDyn (\x y -> UserFields <$> x <*> y) mayUser mayPw
 
    --el "div" $ do

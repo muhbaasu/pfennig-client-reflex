@@ -22,6 +22,7 @@ library
                      , ghcjs-base
                      , reflex >= 0.3
                      , reflex-dom >= 0.2
+                     , safe >= 0.3
   default-language:    Haskell2010
 
 executable pfennig-client-output
