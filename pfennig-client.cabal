@@ -18,6 +18,7 @@ library
   ghc-options:         -Wall
   exposed-modules:     Lib
   build-depends:       base >= 4.7 && < 5
+                     , containers >= 0.5.6
                      , file-embed >= 0.0.9
                      , ghcjs-base
                      , reflex >= 0.3

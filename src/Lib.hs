@@ -9,10 +9,10 @@ module Lib
 import GHCJS.Foreign ()
 import Reflex
 import Reflex.Dom
-import Data.FileEmbed
 import Control.Monad (MonadPlus(), mfilter)
-
---import Layout (readCSS)
+import Data.Monoid ((<>))
+import qualified Data.Map as Map
+import Reflex.Spider.Internal(SpiderHostFrame)
 
 data UserFields = UserFields {
     _usrFmail    :: String
@@ -24,8 +24,24 @@ data LoginFields = LoginFields {
   , _rememberMe :: Bool
   } deriving (Show)
 
+metaViewport :: MonadWidget t m => String -> m ()
+metaViewport s = elAttr "meta" ("name" =: "viewport" <> "content" =: s) blank
+
+stylesheet :: MonadWidget t m => String -> m ()
+stylesheet s = elAttr "link" (Map.fromList [("rel", "stylesheet"), ("href", s)]) $ return ()
+
+scriptSrc :: MonadWidget t m => String -> m ()
+scriptSrc s = elAttr "script" (Map.fromList [("type", "javascript"), ("src", s)]) $ return ()
+
+headSection :: Widget Spider (Gui Spider (WithWebView SpiderHost) SpiderHostFrame) ()
+headSection = do
+  metaViewport "width=device-width, initial-scale=1"
+  stylesheet "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css"
+  stylesheet "https://fonts.googleapis.com/icon?family=Material+Icons"
+  scriptSrc "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"
+
 someFunc :: IO ()
-someFunc = mainWidgetWithCss $(embedFile "assets/style.css") login
+someFunc = mainWidgetWithHead headSection login
 
 row :: forall t m a. MonadWidget t m => m a -> m a
 row = divClass "row"
@@ -39,11 +55,10 @@ login = divClass "center" $
     elClass "h3" "Login" $ text "Login"
     z <- loginField
     x <- mapDyn show z
+    row $ do
+      elAttr "a" ("href" =: "/register") $ text "Register"
+      elAttr "a" ("href" =: "#") $ text "Forgot password?"
     dynText x
-
---    row $ do
---      link "/register" $ text "Register"
---      link "#" $ text "Forgot password?"
 
 loginField :: MonadWidget t m => m (Dynamic t (Maybe LoginFields))
 loginField = do
