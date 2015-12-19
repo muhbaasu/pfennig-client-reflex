@@ -15,7 +15,8 @@ import Data.Monoid ((<>))
 import qualified Data.Map as Map
 import Reflex.Spider.Internal(SpiderHostFrame)
 
-import Layout (readCss)
+import Layout           (readCss)
+import ReflexExtensions
 
 data UserFields = UserFields {
     _usrFmail    :: String
@@ -30,32 +31,14 @@ data LoginFields = LoginFields {
 mNotEmpty :: (Eq a, Monoid a, MonadPlus m) => m a -> m a
 mNotEmpty = mfilter (not . (== mempty))
 
-metaViewport :: MonadWidget t m => String -> m ()
-metaViewport s = elAttr "meta" ("name" =: "viewport" <> "content" =: s) blank
+row :: forall t m a. MonadWidget t m => m a -> m a
+row = divClass "row"
 
-stylesheet :: MonadWidget t m => String -> m ()
-stylesheet s = elAttr "link" ("rel" =: "stylesheet" <> "href" =: s) blank
+rowClass :: forall t m a. MonadWidget t m => String ->m a -> m a
+rowClass c= divClass $ "row " <> c
 
-styleInline :: MonadWidget t m => String -> m ()
-styleInline s = el "style" $ text s
-
-scriptSrc :: MonadWidget t m => String -> m ()
-scriptSrc s = elAttr "script" ("src" =: s) blank
-
-label :: MonadWidget t m => String -> String -> m ()
-label l f = labelClass l f ""
-
-labelClass :: MonadWidget t m => String -> String -> String -> m ()
-labelClass l f c = elAttr "label" ("for" =: f <> "class" =: c) $ text l
-
--- | s - button text, c - button class
-buttonClass :: MonadWidget t m => String -> String -> m (Event t ())
-buttonClass s c = do
-  (e, _) <- elAttr' "button" ("class" =: c) $ text s
-  return $ domEvent Click e
-
-formClass :: MonadWidget t m => String -> m ()
-formClass c = elAttr "form" ("class" =: c) blank
+someFunc :: IO ()
+someFunc = mainWidgetWithHead headSection login
 
 headSection :: Widget Spider (Gui Spider (WithWebView SpiderHost) SpiderHostFrame) ()
 headSection = do
@@ -64,15 +47,6 @@ headSection = do
   stylesheet "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css"
   stylesheet "https://fonts.googleapis.com/icon?family=Material+Icons"
   scriptSrc "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"
-
-someFunc :: IO ()
-someFunc = mainWidgetWithHead headSection login
-
-row :: forall t m a. MonadWidget t m => m a -> m a
-row = divClass "row"
-
-rowClass :: forall t m a. MonadWidget t m => String ->m a -> m a
-rowClass c= divClass $ "row " <> c
 
 login :: MonadWidget t m => m ()
 login = divClass "center" $
