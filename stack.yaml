@@ -14,6 +14,10 @@ packages:
     git: https://github.com/ryantrinkle/reflex-dom.git
     commit: a60ae687cdc284a8eb3776fc95aa2adefc51e7ec # hamishmack-master (improved-base compatible)
   extra-dep: true
+- location:
+    git: https://github.com/muhbaasu/clay.git
+    commit: c9930f17181814c334f98293fd9308f467b45db4
+  extra-dep: true
 
 # Packages to be pulled from upstream that are not in the resolver (e.g., acme-missiles-0.3)
 extra-deps: [

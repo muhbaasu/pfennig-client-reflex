@@ -6,6 +6,7 @@ module Lib
     ( someFunc
     ) where
 
+import Data.Text.Lazy (unpack)
 import GHCJS.Foreign ()
 import Reflex
 import Reflex.Dom
@@ -13,6 +14,8 @@ import Control.Monad (MonadPlus(), mfilter)
 import Data.Monoid ((<>))
 import qualified Data.Map as Map
 import Reflex.Spider.Internal(SpiderHostFrame)
+
+import Layout (readCss)
 
 data UserFields = UserFields {
     _usrFmail    :: String
@@ -31,10 +34,13 @@ metaViewport :: MonadWidget t m => String -> m ()
 metaViewport s = elAttr "meta" ("name" =: "viewport" <> "content" =: s) blank
 
 stylesheet :: MonadWidget t m => String -> m ()
-stylesheet s = elAttr "link" (Map.fromList [("rel", "stylesheet"), ("href", s)]) blank
+stylesheet s = elAttr "link" ("rel" =: "stylesheet" <> "href" =: s) blank
+
+styleInline :: MonadWidget t m => String -> m ()
+styleInline s = el "style" $ text s
 
 scriptSrc :: MonadWidget t m => String -> m ()
-scriptSrc s = elAttr "script" (Map.fromList [("src", s)]) blank
+scriptSrc s = elAttr "script" ("src" =: s) blank
 
 label :: MonadWidget t m => String -> String -> m ()
 label l f = labelClass l f ""
@@ -54,6 +60,7 @@ formClass c = elAttr "form" ("class" =: c) blank
 headSection :: Widget Spider (Gui Spider (WithWebView SpiderHost) SpiderHostFrame) ()
 headSection = do
   metaViewport "width=device-width, initial-scale=1"
+  styleInline $ unpack readCss
   stylesheet "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css"
   stylesheet "https://fonts.googleapis.com/icon?family=Material+Icons"
   scriptSrc "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"
