@@ -65,8 +65,11 @@ loginField :: MonadWidget t m => m (Dynamic t (Maybe LoginFields))
 loginField = do
   lc <- loginCredentials
   cb <- rowClass "mdl-textfield" $ do
-    labelClass "" "remember" "mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
-    checkbox False $ def & attributes .~ constDyn ("id" =: "remember" <> "class" =: "mdl-checkbox__input")
+    cb' <- elAttr "label" ("class" =: "mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect") $ do
+      cb'' <- checkbox False $ def & attributes .~ constDyn ("id" =: "remember" <> "class" =: "mdl-checkbox__input")
+      elAttr "span" ("class" =: "mdl-checkbox__label") $ text "Remember me"
+      return cb''
+    return cb'
   combineDyn (\x y -> LoginFields <$> x <*> Just y) lc (_checkbox_value cb)
 
 loginCredentials :: MonadWidget t m => m (Dynamic t (Maybe UserFields))
@@ -74,11 +77,11 @@ loginCredentials = do
   user <- rowClass "mdl-textfield mdl-js-textfield mdl-textfield--floating-label" $ do
     ti <- textInput $ def & attributes .~ constDyn ("id" =: "email" <> "name" =: "email" <> "type" =: "email" <> "class" =: "mdl-textfield__input")
     labelClass "E-Mail" "email" "mdl-textfield__label"
-    return $ ti
+    return ti
   pw <- rowClass "mdl-textfield mdl-js-textfield mdl-textfield--floating-label" $ do
     ti <- textInput $ def & attributes .~ constDyn ("id" =: "pass" <> "name" =: "pass" <> "type" =: "password" <> "class" =: "mdl-textfield__input")
     labelClass "Password" "pass" "mdl-textfield__label"
-    return $ ti
+    return ti
   mayUser <- mapDyn (mNotEmpty . Just) $ _textInput_value user
   mayPw <- mapDyn (mNotEmpty . Just) $ _textInput_value pw
   combineDyn (\x y -> UserFields <$> x <*> y) mayUser mayPw
