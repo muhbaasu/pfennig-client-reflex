@@ -42,6 +42,7 @@ someFunc = mainWidgetWithHead headSection login
 
 headSection :: Widget Spider (Gui Spider (WithWebView SpiderHost) SpiderHostFrame) ()
 headSection = do
+  metaUtf8
   metaViewport "width=device-width, initial-scale=1"
   styleInline $ unpack readCss
   stylesheet "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css"

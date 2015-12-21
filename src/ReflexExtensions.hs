@@ -8,6 +8,12 @@ import Data.Monoid ((<>))
 metaViewport :: MonadWidget t m => String -> m ()
 metaViewport s = elAttr "meta" ("name" =: "viewport" <> "content" =: s) blank
 
+metaCharSet :: MonadWidget t m => String -> m ()
+metaCharSet s = elAttr "meta" ("charset" =: s) blank
+
+metaUtf8 ::  MonadWidget t m => m ()
+metaUtf8 = metaCharSet "utf-8"
+
 stylesheet :: MonadWidget t m => String -> m ()
 stylesheet s = elAttr "link" ("rel" =: "stylesheet" <> "href" =: s) blank
 
