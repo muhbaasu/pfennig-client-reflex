@@ -7,11 +7,13 @@ module Lib
     ) where
 
 import Data.Text.Lazy (unpack)
+import Data.ByteString.UTF8(toString)
 import GHCJS.Foreign ()
 import Reflex
 import Reflex.Dom
 import Control.Monad (MonadPlus(), mfilter)
 import Data.Monoid ((<>))
+import Data.FileEmbed
 import qualified Data.Map as Map
 import Reflex.Spider.Internal(SpiderHostFrame)
 
@@ -45,43 +47,47 @@ headSection = do
   metaUtf8
   metaViewport "width=device-width, initial-scale=1"
   styleInline $ unpack readCss
-  stylesheet "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css"
-  stylesheet "https://fonts.googleapis.com/icon?family=Material+Icons"
-  scriptSrc "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"
+  styleInline $ toString $ $(embedFile "assets/surface_styles.css")
 
 login :: MonadWidget t m => m ()
 login = divClass "center" $
-  elAttr "form" ("action" =: "#" <> "class" =: "login") $ do
+  elAttr "form" ("action" =: "#" <> "class" =: "login card") $ do
     elClass "h3" "Login" $ text "Login"
     z <- loginField
     x <- mapDyn show z
     row $ do
-      elAttr "a" ("href" =: "/register" <> "class" =: "frm-btn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect") $ text "Register"
-      elAttr "a" ("href" =: "#" <> "class" =: "frm-btn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect") $ text "Forgot password?"
-    row $ buttonClass "Login" "frm-btn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"
+      let regMap = ("href" =: "/register" <> "class" =: "frm-btn btn--flat")
+          fpwMap = ("href" =: "#" <> "class" =: "frm-btn btn--flat")
+      elAttr "a" regMap $ text "Register"
+      elAttr "a" fpwMap $ text "Forgot password?"
+    row $ buttonClass "Login" "frm-btn btn--raised btn--primary"
     dynText x
 
 loginField :: MonadWidget t m => m (Dynamic t (Maybe LoginFields))
 loginField = do
   lc <- loginCredentials
-  cb <- rowClass "mdl-textfield" $ do
-    cb' <- elAttr "label" ("class" =: "mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect") $ do
-      cb'' <- checkbox False $ def & attributes .~ constDyn ("id" =: "remember" <> "class" =: "mdl-checkbox__input")
-      elAttr "span" ("class" =: "mdl-checkbox__label") $ text "Remember me"
-      return cb''
+  cb <- row $ do
+    cb' <- checkbox False $ def & attributes .~ constDyn ("id" =: "remember")
+    elAttr "label" ("for" =: "remember") $ text "Remember me"
     return cb'
   combineDyn (\x y -> LoginFields <$> x <*> Just y) lc (_checkbox_value cb)
 
 loginCredentials :: MonadWidget t m => m (Dynamic t (Maybe UserFields))
 loginCredentials = do
-  user <- rowClass "mdl-textfield mdl-js-textfield mdl-textfield--floating-label" $ do
-    ti <- textInput $ def & attributes .~ constDyn ("id" =: "email" <> "name" =: "email" <> "type" =: "email" <> "class" =: "mdl-textfield__input")
-    labelClass "E-Mail" "email" "mdl-textfield__label"
-    return ti
-  pw <- rowClass "mdl-textfield mdl-js-textfield mdl-textfield--floating-label" $ do
-    ti <- textInput $ def & attributes .~ constDyn ("id" =: "pass" <> "name" =: "pass" <> "type" =: "password" <> "class" =: "mdl-textfield__input")
-    labelClass "Password" "pass" "mdl-textfield__label"
-    return ti
+  user <- row $ do
+    let mailMap = ("id" =: "email"
+                <> "placeholder" =: "E-Mail"
+                <> "name" =: "email"
+                <> "type" =: "email"
+                <> "required" =: "")
+    textInput $ def & attributes .~ constDyn mailMap
+  pw <- row $ do
+    let pwMap = ( "id" =: "pass"
+               <> "placeholder" =: "Password"
+               <> "name" =: "pass"
+               <> "type" =: "password"
+               <> "required" =: "")
+    textInput $ def & attributes .~ constDyn pwMap
   mayUser <- mapDyn (mNotEmpty . Just) $ _textInput_value user
   mayPw <- mapDyn (mNotEmpty . Just) $ _textInput_value pw
   combineDyn (\x y -> UserFields <$> x <*> y) mayUser mayPw
