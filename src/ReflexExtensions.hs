@@ -30,11 +30,15 @@ labelClass :: MonadWidget t m => String -> String -> String -> m ()
 labelClass l f c = elAttr "label" ("for" =: f <> "class" =: c) $ text l
 
 -- | s - button text, c - button class
-buttonClass :: MonadWidget t m => String -> String -> m (Event t ())
+buttonClass :: MonadWidget t m  => String -> String -> m (Event t ())
 buttonClass s c = do
   (e, _) <- elAttr' "button" ("class" =: c) $ text s
   return $ domEvent Click e
 
 formClass :: MonadWidget t m => String -> m ()
 formClass c = elAttr "form" ("class" =: c) blank
+
+iconClass :: MonadWidget t m => String -> String -> m ()
+iconClass c t = elAttr "i" ("class" =: c) $ text t
+
 
