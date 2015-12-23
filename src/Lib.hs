@@ -57,12 +57,12 @@ login = divClass "center" $
     x <- mapDyn show z
     row $ do
       let regMap = ( "href" =: "/register"
-                  <> "class" =: "waves-effect waves-teal btn-flat")
+                  <> "class" =: "frm-btn waves-effect waves-teal btn-flat")
           fpwMap = ( "href" =: "#"
-                  <> "class" =: "waves-effect waves-teal btn-flat")
+                  <> "class" =: "frm-btn waves-effect waves-teal btn-flat")
       elAttr "a" regMap $ text "Register"
       elAttr "a" fpwMap $ text "Forgot password?"
-    row $ buttonClass "Login" "btn waves-effect waves-light"
+    row $ buttonClass "Login" "frm-btn btn waves-effect waves-light"
     dynText x
 
 loginField :: MonadWidget t m => m (Dynamic t (Maybe LoginFields))
