@@ -1,31 +1,32 @@
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE TemplateHaskell       #-}
 
-module Lib
+module Login
     ( someFunc
     ) where
 
-import Data.Text.Lazy (unpack)
-import GHCJS.Foreign ()
-import Reflex
-import Reflex.Dom
-import Control.Monad (MonadPlus(), mfilter)
-import Data.Monoid ((<>))
-import Reflex.Spider.Internal(SpiderHostFrame)
+import           Control.Monad          (MonadPlus (), mfilter)
+import           Data.Monoid            ((<>))
+import           Data.Text.Lazy         (unpack)
+import           GHCJS.Foreign          ()
+import           Reflex
+import           Reflex.Dom
+import           Reflex.Spider.Internal (SpiderHostFrame)
 
-import Layout           (readCss)
-import ReflexExtensions
+import           Layout                 (readCss)
+import           ReflexExtensions
 
 data UserFields = UserFields {
-    _usrFmail    :: String
+    _usrFmail     :: String
   , _usrFPassword :: String
   } deriving (Show)
 
 data LoginFields = LoginFields {
-    _loginFmail :: String
+    _loginFmail     :: String
   , _loginFPassword :: String
-  , _rememberMe :: Bool
+  , _rememberMe     :: Bool
   } deriving (Show)
 
 data LoginEvent = Login (Maybe LoginFields)
@@ -65,7 +66,7 @@ login = divClass "center" $
     row $ do
       let regMap = ( "href" =: "/register"
                   <> "class" =: "frm-btn waves-effect waves-teal btn-flat")
-          fpwMap = ( "href" =: "#"
+          fpwMap = ( "href" =: "/lost-password"
                   <> "class" =: "frm-btn waves-effect waves-teal btn-flat")
       elAttr "a" regMap $ text "Register"
       elAttr "a" fpwMap $ text "Forgot password?"
