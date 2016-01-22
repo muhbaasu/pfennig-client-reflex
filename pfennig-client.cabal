@@ -16,7 +16,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   ghc-options:         -Wall
-  exposed-modules:     Login
+  exposed-modules:     Login, Expenditure
   build-depends:       base >= 4.7 && < 5
                      , bytestring >= 0.10
                      , clay
@@ -28,6 +28,7 @@ library
                      , reflex-dom >= 0.2
                      , safe >= 0.3
                      , text >= 1.2.1
+                     , time >= 1.5
                      , utf8-string >= 1.0.1
   default-language:    Haskell2010
 

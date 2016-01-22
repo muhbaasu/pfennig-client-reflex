@@ -1,9 +1,11 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE RankNTypes            #-}
 
 module ReflexExtensions where
 
-import Reflex
-import Reflex.Dom
-import Data.Monoid ((<>))
+import           Data.Monoid ((<>))
+import           Reflex
+import           Reflex.Dom
 
 metaViewport :: MonadWidget t m => String -> m ()
 metaViewport s = elAttr "meta" ("name" =: "viewport" <> "content" =: s) blank
@@ -42,4 +44,9 @@ formClass c = elAttr "form" ("class" =: c) blank
 iconClass :: MonadWidget t m => String -> String -> m ()
 iconClass c t = elAttr "i" ("class" =: c) $ text t
 
+row :: forall t m a. MonadWidget t m => m a -> m a
+row = divClass "row"
+
+rowClass :: forall t m a. MonadWidget t m => String ->m a -> m a
+rowClass c= divClass $ "row " <> c
 

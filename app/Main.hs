@@ -1,6 +1,6 @@
 module Main where
 
-import Login
+import Expenditure
 
 main :: IO ()
 main = someFunc

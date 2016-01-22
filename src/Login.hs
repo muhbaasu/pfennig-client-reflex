@@ -35,12 +35,6 @@ data LoginEvent = Login (Maybe LoginFields)
 mNotEmpty :: (Eq a, Monoid a, MonadPlus m) => m a -> m a
 mNotEmpty = mfilter (not . (== mempty))
 
-row :: forall t m a. MonadWidget t m => m a -> m a
-row = divClass "row"
-
-rowClass :: forall t m a. MonadWidget t m => String ->m a -> m a
-rowClass c= divClass $ "row " <> c
-
 someFunc :: IO ()
 someFunc = mainWidgetWithHead headSection $ do
   log <- login

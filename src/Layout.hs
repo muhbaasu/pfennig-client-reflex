@@ -2,7 +2,8 @@
 
 module Layout where
 
-import           Clay                    hiding ((**))
+import           Clay                    hiding (wrap, (**))
+import           Clay.Flexbox            (wrap)
 import           Data.ByteString.Lazy    (ByteString)
 import           Data.Text.Lazy          (Text)
 import           Data.Text.Lazy.Encoding (encodeUtf8)
@@ -53,3 +54,19 @@ base' = do
   ".frm-btn"? do
     flexGrow 1
     margin (vmin 0.6) (vmin 0.6) (vmin 0.6) (vmin 0.6)
+
+  ".expenditure-elem" ? do
+    justifyContent spaceBetween
+    flexGrow 1
+
+  ".expenditure-row" ? do
+    flexWrap wrap
+
+  ".card-title-right" ? do
+    color "#fff"
+    position absolute
+    bottom nil
+    padding (px 20) (px 20) (px 20) (px 20)
+    right nil
+    fontSize (px 24)
+    fontWeight $ weight 300
