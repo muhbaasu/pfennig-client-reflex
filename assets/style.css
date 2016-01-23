@@ -1,3 +1,89 @@
-body {
-    background: red;
+html
+{
+  -webkit-box-sizing : border-box;
+  -moz-box-sizing    : border-box;
+  -ms-box-sizing     : border-box;
+  -o-box-sizing      : border-box;
+  box-sizing         : border-box;
 }
+
+*
+{
+  -webkit-box-sizing : inherit;
+  -moz-box-sizing    : inherit;
+  -ms-box-sizing     : inherit;
+  -o-box-sizing      : inherit;
+  box-sizing         : inherit;
+}
+
+.row
+{
+  display        : flex;
+  align-items    : center;
+  flex-direction : row;
+}
+
+.column
+{
+  display        : flex;
+  flex-direction : column;
+}
+
+.center
+{
+  display         : flex;
+  height          : 100%;
+  width           : 100%;
+  justify-content : center;
+  align-items     : center;
+}
+
+.frm-btn
+{
+  flex-grow : 1;
+  margin    : 0.59999vmin 0.59999vmin 0.59999vmin 0.59999vmin;
+}
+
+.expenditure-elem
+{
+  justify-content : space-between;
+  flex-grow       : 1;
+}
+
+.expenditure-row
+{
+  flex-wrap : wrap;
+}
+
+.card-title-custom
+{
+  color       : #ffffff;
+  padding     : 6px 20px 6px 20px;
+  font-size   : 24px;
+  font-weight : 300;
+}
+
+.card-title-right
+{
+    align-self: flex-end;
+}
+
+.card-map
+{
+  display       : block;
+  border-radius : 2px 2px 0 0;
+  position      : relative;
+  width         : 100%;
+  height        : 300px;
+}
+
+.title
+{
+  font-family : "comfortaa", sans-serif;
+  font-size   : 1.39999rem;
+}
+
+@font-face
+@import url(assets/comfortaa-regular-webfont.woff);
+
+/* Generated with Clay, http://fvisser.nl/clay */

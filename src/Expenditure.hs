@@ -3,20 +3,17 @@
 {-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE TemplateHaskell       #-}
 
-module Expenditure
-    ( someFunc
-    ) where
+module Expenditure (expenditureCard) where
 
 import           Data.Monoid            ((<>))
 import qualified Data.Text              as T
-import qualified Data.Text.Lazy         as TL
 import           Data.Time.LocalTime    (LocalTime)
+import           Control.Monad.IO.Class  (liftIO)
 import           GHCJS.Foreign          ()
-import           Reflex
 import           Reflex.Dom
-import           Reflex.Spider.Internal (SpiderHostFrame)
 
 import           Layout                 (readCss)
+import           Leaflet
 import           ReflexExtensions
 
 newtype ExpenditureId = ExpenditureId Int deriving (Eq, Show)
@@ -40,34 +37,25 @@ _faicon c =
   let ic = "fa fa-" <> c
   in iconClass ic ""
 
---expenditureRow :: forall t m a. MonadWidget t m => m a -> m a ->  m ()
--- expenditureRow lbl content = do
---    rowClass "" $ do
---      divClass "" lbl
---      divClass "" content
-
-someFunc :: IO ()
-someFunc = mainWidgetWithHead headSection expenditureCard
-
-headSection :: Widget Spider (Gui Spider (WithWebView SpiderHost) SpiderHostFrame) ()
-headSection = do
-  metaUtf8
-  metaViewport "width=device-width, initial-scale=1"
-  styleInline $ TL.unpack readCss
-  stylesheet "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css"
-  stylesheet "https://fonts.googleapis.com/icon?family=Material+Icons"
-  stylesheet "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"
-  scriptSrc "https://code.jquery.com/jquery-2.1.4.min.js"
-  scriptSrc "https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"
-
 expenditureCard :: MonadWidget t m => m ()
 expenditureCard = divClass "card large" $ do
-  divClass "card-image" $ do
-    elAttr "img" ("src" =: "assets/map.png") blank
-    elAttr "span" ("class" =: "card-title red-text") $
-      text "Food purchases"
-    elAttr "span" ("class" =: "card-title-right red-text") $
-      text "39.95$"
+  divClass "card-map" $ do
+    (cardMap, _) <- elAttr' "div" ("style" =: "height: 240px;") $ return ()
+    rowClass "expenditure-elem blue-grey darken-1" $ do
+      elAttr "span" ("class" =: "card-title-custom") $
+        text "Food purchases"
+      elAttr "span" ("class" =: "card-title-custom card-title-right") $
+        text "39.95$"
+    lm <- liftIO $ do
+      lm <- leafletMap $ _el_element cardMap
+      leafletMapSetView lm (51.505, -0.09) 13
+      let osurl = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          oselem = "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
+      ltl <- leafletTileLayer osurl 15 oselem
+      leafletTileLayerAddToMap ltl lm
+      return lm
+    postBuild <- getPostBuild
+    performEvent_ $ fmap (\_ -> liftIO $ leafletMapInvalidateSize_ $ unLeafletMap lm) postBuild
   divClass "card-content" $ do
     rowClass "expenditure-row" $ do
       rowClass "expenditure-elem" $ do

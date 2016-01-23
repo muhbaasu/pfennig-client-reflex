@@ -62,11 +62,26 @@ base' = do
   ".expenditure-row" ? do
     flexWrap wrap
 
-  ".card-title-right" ? do
+  ".card-title-row" ? do 
+    backgroundColor "#fff"
+
+  ".card-title-custom" ? do
     color "#fff"
     position absolute
     bottom nil
     padding (px 20) (px 20) (px 20) (px 20)
-    right nil
     fontSize (px 24)
     fontWeight $ weight 300
+
+  ".card-title-right" ? do
+     right nil
+
+  ".card-title-left" ? do
+    right nil
+
+  ".card-map" ? do
+    display block
+    borderRadius (px 2) (px 2) nil nil
+    position relative
+    width $ pct 100
+    height $ px 300
