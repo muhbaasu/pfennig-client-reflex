@@ -1,89 +1,85 @@
-html
-{
-  -webkit-box-sizing : border-box;
-  -moz-box-sizing    : border-box;
-  -ms-box-sizing     : border-box;
-  -o-box-sizing      : border-box;
-  box-sizing         : border-box;
+html {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-*
-{
-  -webkit-box-sizing : inherit;
-  -moz-box-sizing    : inherit;
-  -ms-box-sizing     : inherit;
-  -o-box-sizing      : inherit;
-  box-sizing         : inherit;
+* {
+    -webkit-box-sizing: inherit;
+    -moz-box-sizing: inherit;
+    -ms-box-sizing: inherit;
+    -o-box-sizing: inherit;
+    box-sizing: inherit;
 }
 
-.row
-{
-  display        : flex;
-  align-items    : center;
-  flex-direction : row;
+.row {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
 }
 
-.column
-{
-  display        : flex;
-  flex-direction : column;
+.column {
+    display: flex;
+    flex-direction: column;
 }
 
-.center
-{
-  display         : flex;
-  height          : 100%;
-  width           : 100%;
-  justify-content : center;
-  align-items     : center;
+.center {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
 }
 
-.frm-btn
-{
-  flex-grow : 1;
-  margin    : 0.59999vmin 0.59999vmin 0.59999vmin 0.59999vmin;
+.frm-btn {
+    flex-grow: 1;
+    margin: 0.59999vmin 0.59999vmin 0.59999vmin 0.59999vmin;
 }
 
-.expenditure-elem
-{
-  justify-content : space-between;
-  flex-grow       : 1;
+.expenditure-elem {
+    justify-content: space-between;
+    flex-grow: 1;
+    min-width: 94vw;
+    padding: 0 2vw;
 }
 
-.expenditure-row
-{
-  flex-wrap : wrap;
+.card-content {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.card-title-custom
-{
-  color       : #ffffff;
-  padding     : 6px 20px 6px 20px;
-  font-size   : 24px;
-  font-weight : 300;
+.card-title-custom {
+    color: #ffffff;
+    padding: 6px 20px 6px 20px;
+    font-size: 24px;
+    font-weight: 300;
 }
 
-.card-title-right
-{
-    align-self: flex-end;
+.card-map {
+    display: block;
+    border-radius: 2px 2px 0 0;
+    position: relative;
+    width: 100%;
+    height: 300px;
 }
 
-.card-map
-{
-  display       : block;
-  border-radius : 2px 2px 0 0;
-  position      : relative;
-  width         : 100%;
-  height        : 300px;
+.title {
+    font-family: "comfortaa", sans-serif;
+    font-size: 1.39999rem;
 }
 
-.title
-{
-  font-family : "comfortaa", sans-serif;
-  font-size   : 1.39999rem;
+.flex-max {
+    flex: 1;
 }
 
-@font-face
-@import url(assets/comfortaa-regular-webfont.woff);
+@media screen and (min-width: 1024px) {
+    .expenditure-elem {
+        min-width: 44vw;
+    }
+}
+
+@font-face @import url(assets/comfortaa-regular-webfont.woff);
 
 /* Generated with Clay, http://fvisser.nl/clay */

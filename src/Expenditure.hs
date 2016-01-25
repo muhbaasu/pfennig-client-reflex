@@ -41,8 +41,8 @@ expenditureCard :: MonadWidget t m => m ()
 expenditureCard = divClass "card large" $ do
   divClass "card-map" $ do
     (cardMap, _) <- elAttr' "div" ("style" =: "height: 240px;") $ return ()
-    rowClass "expenditure-elem blue-grey darken-1" $ do
-      elAttr "span" ("class" =: "card-title-custom") $
+    rowClass "expenditure-elem indigo" $ do
+      elAttr "span" ("class" =: "card-title-custom flex-max") $
         text "Food purchases"
       elAttr "span" ("class" =: "card-title-custom card-title-right") $
         text "39.95$"
@@ -57,24 +57,22 @@ expenditureCard = divClass "card large" $ do
     postBuild <- getPostBuild
     performEvent_ $ fmap (\_ -> liftIO $ leafletMapInvalidateSize_ $ unLeafletMap lm) postBuild
   divClass "card-content" $ do
-    rowClass "expenditure-row" $ do
-      rowClass "expenditure-elem" $ do
-        _faicon "clock-o"
-        divClass "" $ text "15.02.2016 - 16:43:00"
-      rowClass "expenditure-elem" $ do
-        divClass "label" $ text "Payment method"
-        divClass "" $ _faicon "cc-visa"
-    rowClass "expenditure-row" $ do
-      rowClass "expenditure-elem" $ do
-        divClass "label" $ text "Tags"
-        divClass "" $ do
-          _tag "Food"
-          _tag "Weekly"
-      rowClass "expenditure-elem" $ do
-        divClass "label" $ text "Shops"
-        divClass "" $ do
-          _tag "Walmart"
-          _tag "Woolworth"
+    rowClass "expenditure-elem" $ do
+      _faicon "clock-o flex-max"
+      divClass "" $ text "15.02.2016 - 16:43:00"
+    rowClass "expenditure-elem" $ do
+      divClass "label flex-max" $ text "Payment method"
+      _faicon "cc-visa"
+    rowClass "expenditure-elem" $ do
+      divClass "label flex-max" $ text "Tags"
+      divClass "" $ do
+        _tag "Food"
+        _tag "Weekly"
+    rowClass "expenditure-elem" $ do
+      divClass "label flex-max" $ text "Shops"
+      divClass "" $ do
+        _tag "Walmart"
+        _tag "Woolworth"
   divClass "card-action" $ do
     elAttr "a" ("href" =: "#") $ text "edit"
     elAttr "a" ("href" =: "#") $ text "delete"
