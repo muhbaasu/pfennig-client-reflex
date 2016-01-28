@@ -5,10 +5,10 @@
 
 module Expenditure (expenditureCard) where
 
+import           Control.Monad.IO.Class (liftIO)
 import           Data.Monoid            ((<>))
 import qualified Data.Text              as T
 import           Data.Time.LocalTime    (LocalTime)
-import           Control.Monad.IO.Class  (liftIO)
 import           GHCJS.Foreign          ()
 import           Reflex.Dom
 
@@ -41,8 +41,8 @@ expenditureCard :: MonadWidget t m => m ()
 expenditureCard = divClass "card large" $ do
   divClass "card-map" $ do
     (cardMap, _) <- elAttr' "div" ("style" =: "height: 240px;") $ return ()
-    rowClass "expenditure-elem indigo" $ do
-      elAttr "span" ("class" =: "card-title-custom flex-max") $
+    rowClass "expenditure-elem blue-grey darken-1" $ do
+      elAttr "span" ("class" =: "card-title-custom") $
         text "Food purchases"
       elAttr "span" ("class" =: "card-title-custom card-title-right") $
         text "39.95$"
@@ -57,24 +57,34 @@ expenditureCard = divClass "card large" $ do
     postBuild <- getPostBuild
     performEvent_ $ fmap (\_ -> liftIO $ leafletMapInvalidateSize_ $ unLeafletMap lm) postBuild
   divClass "card-content" $ do
-    rowClass "expenditure-elem" $ do
-      _faicon "clock-o flex-max"
-      divClass "" $ text "15.02.2016 - 16:43:00"
-    rowClass "expenditure-elem" $ do
-      divClass "label flex-max" $ text "Payment method"
-      _faicon "cc-visa"
-    rowClass "expenditure-elem" $ do
-      divClass "label flex-max" $ text "Tags"
-      divClass "" $ do
-        _tag "Food"
-        _tag "Weekly"
-    rowClass "expenditure-elem" $ do
-      divClass "label flex-max" $ text "Shops"
-      divClass "" $ do
-        _tag "Walmart"
-        _tag "Woolworth"
+    elAttr "form" ("action" =: "#" <> "class" =: "flex-row expenditure-form") $ do
+      divClass "input-field col" $ do
+        let attrs = ("id" =: "time"
+                  <> "name" =: "time"
+                  <> "disabled" =: "")
+        time' <- textInput $ def & textInputConfig_initialValue .~ "2018-01-03T00:01"
+                                 & attributes .~ constDyn attrs
+        label "Time" "time"
+        return time'
+      divClass "input-field col" $ do
+        let attrs = ("id" =: "payment-method"
+                  <> "name" =: "payment-method"
+                  <> "disabled" =: "")
+        time' <- textInput $ def & textInputConfig_initialValue .~ "VISA"
+                                   & attributes .~ constDyn attrs
+        label "Payment method" "payment-method"
+      divClass "input-field col" $ do
+        let attrs = ("id" =: "tags"
+                  <> "name" =: "tags"
+                  <> "disabled" =: "")
+        time' <- textInput $ def & textInputConfig_initialValue .~ "weekly, groceries"
+                                   & attributes .~ constDyn attrs
+        label "Tags" "tags"
   divClass "card-action" $ do
     elAttr "a" ("href" =: "#") $ text "edit"
     elAttr "a" ("href" =: "#") $ text "delete"
-  return ()
 
+  -- Workaround for Materalize CSS which forces a text update of the
+  -- just rendered form inputs
+  postBuild <- getPostBuild
+  performEvent_ $ fmap (\_ -> liftIO $ updateTextFields_) postBuild

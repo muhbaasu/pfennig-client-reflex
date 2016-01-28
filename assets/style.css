@@ -14,13 +14,12 @@ html {
     box-sizing: inherit;
 }
 
-.row {
+.flex-row {
     display: flex;
-    align-items: center;
     flex-direction: row;
 }
 
-.column {
+.flex-column {
     display: flex;
     flex-direction: column;
 }
@@ -36,6 +35,13 @@ html {
 .frm-btn {
     flex-grow: 1;
     margin: 0.59999vmin 0.59999vmin 0.59999vmin 0.59999vmin;
+}
+
+.expenditure-form
+{
+  flex-wrap : wrap;
+  justify-content : space-between;
+  flex: 1;
 }
 
 .expenditure-elem {
@@ -72,6 +78,10 @@ html {
 
 .flex-max {
     flex: 1;
+}
+
+.input-field label {
+    left: 0 !important;
 }
 
 @media screen and (min-width: 1024px) {

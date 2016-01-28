@@ -13,6 +13,8 @@ import Control.Monad.IO.Class
 
 newtype LeafletMap = LeafletMap { unLeafletMap :: JSRef LeafletMap }
 
+newtype Materialize = Materialize JSVal
+
 newtype LeafletTileLayer = LeafletTileLayer { unLeafletTileLayer :: JSRef LeafletTileLayer }
 
 foreign import javascript unsafe "L['map']($1)" leafletMap_ :: JSRef Element -> IO (JSRef LeafletMap)
@@ -24,6 +26,8 @@ foreign import javascript unsafe "L['tileLayer']($1, { maxZoom: $2, attribution:
 foreign import javascript unsafe "$1['addTo']($2)" leafletTileLayerAddToMap_ :: JSRef LeafletTileLayer -> JSRef LeafletMap -> IO ()
 
 foreign import javascript unsafe "$1['invalidateSize']()" leafletMapInvalidateSize_ :: JSRef LeafletMap -> IO ()
+
+foreign import javascript unsafe "Materialize.updateTextFields()" updateTextFields_ :: IO ()
 
 leafletMap :: IsElement e => e -> IO LeafletMap
 leafletMap e = do
@@ -42,15 +46,3 @@ leafletTileLayer src maxZoom attribution = do
 leafletTileLayerAddToMap :: LeafletTileLayer -> LeafletMap -> IO ()
 leafletTileLayerAddToMap ltl lm = leafletTileLayerAddToMap_ (unLeafletTileLayer ltl) (unLeafletMap lm)
 
---cardMap :: IsElement e => e -> IO ()
---cardMap elementRef = do
---  lm <- do
---     lm <- leafletMap elementRef
---     leafletMapSetView lm (40.769, -73.965) 13
---     let osurl = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
---         oselem = "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
---     ltl <- leafletTileLayer osurl 15 oselem
---     leafletTileLayerAddToMap ltl lm
---     return lm
---  postBuild <- getPostBuild
---  performEvent_ $ fmap (\_ -> liftIO $ leafletMapInvalidateSize_ $ unLeafletMap lm) postBuild
