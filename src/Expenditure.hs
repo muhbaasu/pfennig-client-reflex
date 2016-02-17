@@ -1,12 +1,12 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE RankNTypes            #-}
-{-# LANGUAGE TemplateHaskell       #-}
 
 module Expenditure (expenditureCard) where
 
 import           Control.Monad.IO.Class (liftIO)
 import           Data.Monoid            ((<>))
+import           Data.Bool.Extras       (mwhen)
 import qualified Data.Text              as T
 import           Data.Time.LocalTime    (LocalTime)
 import           GHCJS.Foreign          ()
@@ -37,8 +37,8 @@ _faicon c =
   let ic = "fa fa-" <> c
   in iconClass ic ""
 
-expenditureCard :: MonadWidget t m => m ()
-expenditureCard = divClass "card" $ do
+expenditureCard :: MonadWidget t m => Bool -> m ()
+expenditureCard disabled = divClass "card" $ do
   divClass "card-map" $ do
     (cardMap, _) <- elAttr' "div" ("style" =: "height: 240px;") $ return ()
     rowClass "card-title-row blue-grey darken-1" $ do
@@ -56,27 +56,27 @@ expenditureCard = divClass "card" $ do
       return lm
     postBuild <- getPostBuild
     performEvent_ $ fmap (\_ -> liftIO $ leafletMapInvalidateSize_ $ unLeafletMap lm) postBuild
-  divClass "card-content" $ do
+  divClass "card-content" $
     elAttr "form" ("action" =: "#" <> "class" =: "flex-row expenditure-form") $ do
       divClass "input-field col" $ do
-        let attrs = ("id" =: "time"
+        let attrs = "id" =: "time"
                   <> "name" =: "time"
-                  <> "disabled" =: "")
+                  <>  mwhen ("disabled" =: "") disabled
         time' <- textInput $ def & textInputConfig_initialValue .~ "2018-01-03T00:01"
                                  & attributes .~ constDyn attrs
         label "Time" "time"
         return time'
       divClass "input-field col" $ do
-        let attrs = ("id" =: "payment-method"
+        let attrs = "id" =: "payment-method"
                   <> "name" =: "payment-method"
-                  <> "disabled" =: "")
+                  <>  mwhen ("disabled" =: "") disabled
         time' <- textInput $ def & textInputConfig_initialValue .~ "VISA"
                                    & attributes .~ constDyn attrs
         label "Payment method" "payment-method"
       divClass "input-field col" $ do
-        let attrs = ("id" =: "tags"
+        let attrs = "id" =: "tags"
                   <> "name" =: "tags"
-                  <> "disabled" =: "")
+                  <>  mwhen ("disabled" =: "") disabled
         time' <- textInput $ def & textInputConfig_initialValue .~ "weekly, groceries"
                                    & attributes .~ constDyn attrs
         label "Tags" "tags"
@@ -87,4 +87,4 @@ expenditureCard = divClass "card" $ do
   -- Workaround for Materalize CSS which forces a text update of the
   -- just rendered form inputs
   postBuild <- getPostBuild
-  performEvent_ $ fmap (\_ -> liftIO $ updateTextFields_) postBuild
+  performEvent_ $ fmap (\_ -> liftIO updateTextFields_) postBuild

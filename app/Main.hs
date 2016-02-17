@@ -12,7 +12,7 @@ import Expenditure
 import ReflexExtensions
 
 main :: IO ()
-main = mainWidget expenditureCard
+main = mainWidget $ expenditureCard False
 
 headSection :: Widget Spider (Gui Spider (WithWebView SpiderHost) SpiderHostFrame) ()
 headSection = do
