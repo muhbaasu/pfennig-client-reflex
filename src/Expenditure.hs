@@ -38,10 +38,10 @@ _faicon c =
   in iconClass ic ""
 
 expenditureCard :: MonadWidget t m => m ()
-expenditureCard = divClass "card large" $ do
+expenditureCard = divClass "card" $ do
   divClass "card-map" $ do
     (cardMap, _) <- elAttr' "div" ("style" =: "height: 240px;") $ return ()
-    rowClass "expenditure-elem blue-grey darken-1" $ do
+    rowClass "card-title-row blue-grey darken-1" $ do
       elAttr "span" ("class" =: "card-title-custom") $
         text "Food purchases"
       elAttr "span" ("class" =: "card-title-custom card-title-right") $
